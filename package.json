@@ -1,0 +1,23 @@
+{
+  "name": "node-demo",
+  "version": "1.0.0",
+  "description": "This is my node demo",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "node",
+    "demo"
+  ],
+  "author": "Gargi Kantesaria",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.368.0",
+    "cors": "^2.8.5",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.14",
+    "nodemon": "^1.18.4"
+  }
+}
