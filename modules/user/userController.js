@@ -64,7 +64,6 @@ userController.editUserDetail = (req, res) => {
 }
 
 userController.checkUserExist = (req,res) => {
-  console.log(req);
   userUtil.checkUserExist(req.body.email).then((data) => {
     if(!_.isEmpty(data)) {
       res.status(200).json({ isexist: true });
