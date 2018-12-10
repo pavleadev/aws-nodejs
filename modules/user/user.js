@@ -6,5 +6,5 @@ userRouter.post('/addDetails', userController.addDetail);
 userRouter.get('/getDetail', userController.getDetail);
 userRouter.post('/loginUser', userController.varifyUser);
 userRouter.post('/editUserDetail', userController.editUserDetail);
-
+userRouter.post('/checkUserExist', userController.checkUserExist)
 module.exports = userRouter;

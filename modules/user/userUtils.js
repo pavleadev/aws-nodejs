@@ -86,4 +86,20 @@ userUtil.editUser = (id, data) => {
   })
 }
 
+userUtil.checkUserExist = (email) => {
+  return new Promise((resolve, reject) => {
+    userSchema.findOne({ userEmail : email }).then((data) => {
+      console.log("data is", data);
+      if(data != null){
+        resolve(data);
+      }
+      else{
+        resolve({});
+      }
+    }).catch((err) => {
+      console.log("error is", err);
+    })
+  })
+}
+
 module.exports = userUtil;

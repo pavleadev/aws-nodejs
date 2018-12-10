@@ -1,6 +1,7 @@
 var userUtil = require('./userUtils');
 var passwordHash = require('password-hash');
 var userController = {};
+const _ = require('lodash');
 var userData;
 
 userController.addDetail = (req, res) => {
@@ -15,7 +16,7 @@ userController.addDetail = (req, res) => {
   userpicture ? userData.userpicture = userpicture : null;
 
   userUtil.createUser(userData).then((data) => {
-    res.status(200).json({ body: "You're successfull.", data: data });
+    res.status(200).json({ body: "Your registration is done successfully.", data: data });
   }).catch(() => {
     res.status(400).json({ error: "sorry, error in operation." })
   })
@@ -41,7 +42,7 @@ userController.varifyUser = (req, res) => {
   }
 
   userUtil.varifyUser(userData).then((data) => {
-    (passwordHash.verify(userData.userPassword, data.userPassword)) ? res.status(200).json({ body: data }) : res.status(400).json({ error: "Sorry, you entered wrong password." })
+    (passwordHash.verify(userData.userPassword, data.userPassword)) ? res.status(200).json({ body: "You're login successfully." ,data : data }) : res.status(400).json({ error: "Sorry, you entered wrong password." })
   }).catch((err) => {
     res.status(400).json({ error: "Sorry, error in operation." })
   })
@@ -56,9 +57,22 @@ userController.editUserDetail = (req, res) => {
   }
   userpicture ? userData.userpicture = userpicture : null;
   userUtil.editUser(req.body.id, userData).then((resp) => {
-    res.status(200).json({ body: resp });
+    res.status(200).json({ body : "Your details has been edited." ,data : resp });
   }).catch(() => {
     res.status(400).json({ error: "sorry, error in operation." })
+  })
+}
+
+userController.checkUserExist = (req,res) => {
+  console.log(req);
+  userUtil.checkUserExist(req.body.email).then((data) => {
+    if(!_.isEmpty(data)) {
+      res.status(200).json({ isexist: true });
+    } else {
+      res.status(200).json({ isexist: false });
+    }
+  }).catch((err) => {
+    res.status(400).json({ error : "Sorry, error in operation."})
   })
 }
 
