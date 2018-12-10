@@ -70,10 +70,15 @@ userUtil.editUser = (id, data) => {
         const body = Buffer.from((data.userpicture).replace(/^data:image\/\w+;base64,/, ''), 'base64');
         const ext = (data.userpicture).split(';')[0].split('/')[1] || 'jpg';
         // const key = `${uuid.v1()}.${ext}`;
-        const key = user.userpicture;
+       let key;
+        if(user.userpicture) {
+           key = user.userpicture
+        } else{
+           key = user.userEmail + Date.now();
+        } 
         awsUtils.s3Putimage({ body, mime: `image/${ext}` }, key, 'base64').then((result) => {
           resolve(result);
-          delete data.userpicture;
+          (user.userpicture) ? delete data.userpicture : data.userpicture = result;
           userSchema.findOneAndUpdate({ _id: id }, { $set: data }, { new: true }).then((resp) => { resolve(resp) }).catch((err) => { reject(err) })
         }).catch((err) => {
           reject(err);
