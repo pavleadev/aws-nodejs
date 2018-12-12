@@ -20,9 +20,9 @@ const transporter = nodemailer.createTransport(`smtp://${SMTPuser}:${SMTPpass}@$
 sendEmail.sendEmailToUser = (data) => {           
   return new Promise ((resolve, reject) => {
     let mailOptions = {
-      from: 'VARIFIED_SMTP_EMAIL_ID', 
+      from: 'YOUR_VARIFIED_EMAIL', 
       to: data,
-      subject: 'SMTP_PASSWORD', 
+      subject: 'Email notification', 
       text: 'Hi this is text.',
       html: '<h2>hi this is from html.</h2>'
     }
