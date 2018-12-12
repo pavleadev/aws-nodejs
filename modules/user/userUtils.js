@@ -1,5 +1,6 @@
 var userSchema = require('./userSchema');
 var awsUtils = require('../../helper/aws');
+var sendEmail = require('../../helper/sendEmail');
 var userUtil = {};
 
 userUtil.createUser = (userData) => {
@@ -95,6 +96,16 @@ userUtil.checkUserExist = (email) => {
   return new Promise((resolve, reject) => {
     userSchema.findOne({ userEmail : email }).then((data) => {
       (data != null) ? resolve(data) : resolve({});     
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+userUtil.forgotPasswordUSer = (email) => {
+  return new Promise((resolve,reject) => {
+    sendEmail.sendEmailToUser(email).then((res) =>{
+      resolve(res);
     }).catch((err) => {
       reject(err);
     })

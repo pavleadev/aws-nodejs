@@ -75,4 +75,11 @@ userController.checkUserExist = (req,res) => {
   })
 }
 
+userController.forgotPasswordHandler = (req, res) => {
+  const { userEmail } = req.body;
+  userUtil.forgotPasswordUSer(userEmail).then((data) => {
+    releaseEvents.status(200).json({ body : "your password has been sent to you. Please check your email." , data : data })
+  }).catch((err) => { res.status(400).json({ error: err }) });
+}
+
 module.exports = userController;
