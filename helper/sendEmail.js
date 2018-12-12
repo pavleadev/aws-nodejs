@@ -1,13 +1,6 @@
 const nodemailer = require('nodemailer');
-const aws = require('aws-sdk');
 var sendEmail = {};
 
-aws.config = {
-  accessKeyId: process.env.AwsAccessKey,
-  secretAccessKey: process.env.AwsSecretAccessKey,
-  // region: process.env.AwsRegion,
-  signatureVersion: 'v4',
-};
 // simple way using your gmail credentials
 // var transporter = nodemailer.createTransport({
 //   service : 'Gmail',
