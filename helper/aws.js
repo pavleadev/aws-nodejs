@@ -4,11 +4,14 @@ var awsUtils = {};
 aws.config = {
   accessKeyId: process.env.AwsAccessKey,
   secretAccessKey: process.env.AwsSecretAccessKey,
-  // region: process.env.AwsRegion,
+  region: process.env.AwsRegion,
   signatureVersion: 'v4',
 };
 
 const s3 = new aws.S3();
+const sns = new aws.SNS({
+  region: process.env.AwsRegion,
+});
 
 awsUtils.s3Putimage = (file, key, encoding) => {
   return new Promise((resolve, reject) => {
@@ -41,5 +44,30 @@ awsUtils.s3Getimage = (key) => {
     });
   });
 }
+
+awsUtils.publishSnsSMS = (to, message) => {
+  return new Promise((resolve, reject) => {
+    const params = {
+      Message: message,
+      MessageStructure: 'string',
+      PhoneNumber: to,
+    };
+    const attri = {
+      attributes: { /* required */
+        DefaultSMSType: 'Transactional', /* highest reliability */
+      },
+    }
+    sns.setSMSAttributes(attri, (err,res) => {
+      if (res) {
+        sns.publish(params, (snsErr, snsData) => {
+           (snsErr) ? reject(snsErr) : resolve(snsData);
+        });
+      }
+      else if (err) {
+        reject(err);
+      }
+    })
+  })
+};
 
 module.exports = awsUtils;

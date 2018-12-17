@@ -42,7 +42,7 @@ userController.varifyUser = (req, res) => {
   }
 
   userUtil.varifyUser(userData).then((data) => {
-    (passwordHash.verify(userData.userPassword, data.userPassword)) ? res.status(200).json({ body: "You're login successfully." ,data : data }) : res.status(400).json({ error: "Sorry, you entered wrong password." })
+    (passwordHash.verify(userData.userPassword, data.userPassword)) ? res.status(200).json({ body: "You're login successfully.", data: data }) : res.status(400).json({ error: "Sorry, you entered wrong password." })
   }).catch((err) => {
     res.status(400).json({ error: "Sorry, error in operation." })
   })
@@ -57,29 +57,40 @@ userController.editUserDetail = (req, res) => {
   }
   userpicture ? userData.userpicture = userpicture : null;
   userUtil.editUser(req.body.id, userData).then((resp) => {
-    res.status(200).json({ body : "Your details has been edited." ,data : resp });
+    res.status(200).json({ body: "Your details has been edited.", data: resp });
   }).catch(() => {
     res.status(400).json({ error: "sorry, error in operation." })
   })
 }
 
-userController.checkUserExist = (req,res) => {
+userController.checkUserExist = (req, res) => {
   userUtil.checkUserExist(req.body.email).then((data) => {
-    if(!_.isEmpty(data)) {
+    if (!_.isEmpty(data)) {
       res.status(200).json({ isexist: true });
     } else {
       res.status(200).json({ isexist: false });
     }
   }).catch((err) => {
-    res.status(400).json({ error : "Sorry, error in operation."})
+    res.status(400).json({ error: "Sorry, error in operation." })
   })
 }
 
 userController.forgotPasswordHandler = (req, res) => {
-  const { userEmail } = req.body;
-  userUtil.forgotPasswordUSer(userEmail).then((data) => {
-    releaseEvents.status(200).json({ body : "your password has been sent to you. Please check your email." , data : data })
-  }).catch((err) => { res.status(400).json({ error: err }) });
+  const { userEmail, userMobile } = req.body;
+  if (userEmail) {
+    userUtil.forgotPasswordUSerEmail(userEmail).then((data) => {
+      res.status(200).json({ body: "your password has been sent to you. Please check your email.", data: data });
+    }).catch((err) => {
+      res.status(400).json({ error: err.message })
+    });
+  }
+  else if (userMobile) {
+    userUtil.forgotPasswordUSerMobile(userMobile).then((data) => {
+      res.status(200).json({ body: "your password has been sent to you. Please check your messages.", data: data })
+    }).catch((err) => {
+      res.status(400).json({ error: err.message })
+    });
+  }
 }
 
 module.exports = userController;

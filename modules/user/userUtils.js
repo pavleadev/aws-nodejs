@@ -102,9 +102,19 @@ userUtil.checkUserExist = (email) => {
   })
 }
 
-userUtil.forgotPasswordUSer = (email) => {
+userUtil.forgotPasswordUSerEmail = (email) => {
   return new Promise((resolve,reject) => {
     sendEmail.sendEmailToUser(email).then((res) =>{
+      resolve(res);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+userUtil.forgotPasswordUSerMobile = (mobile) => {
+  return new Promise((resolve, reject) => {
+    awsUtils.publishSnsSMS( mobile ,"hi i am gaddu... from AWS demo..." ).then((res) => {
       resolve(res);
     }).catch((err) => {
       reject(err);
