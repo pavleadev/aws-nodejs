@@ -5,13 +5,14 @@ const _ = require('lodash');
 var userData;
 
 userController.addDetail = (req, res) => {
-  const { userEmail, userPassword, userpicture, userName, userGender, seasons } = req.body;
+  const { userEmail, userPassword, userpicture, userName, userGender, seasons, userMobile } = req.body;
   userData = {
     userEmail: userEmail,
     userPassword: passwordHash.generate(userPassword),
     userName: userName,
     userGender: userGender,
     seasons: seasons,
+    userMobile: userMobile
   };
   userpicture ? userData.userpicture = userpicture : null;
 

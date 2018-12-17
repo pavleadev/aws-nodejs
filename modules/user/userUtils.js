@@ -104,8 +104,12 @@ userUtil.checkUserExist = (email) => {
 
 userUtil.forgotPasswordUSerEmail = (email) => {
   return new Promise((resolve,reject) => {
-    sendEmail.sendEmailToUser(email).then((res) =>{
-      resolve(res);
+    userSchema.findOne({userEmail : email}).then((data) => {
+      sendEmail.sendEmailToUser(email, data.userPassword).then((res) =>{
+        resolve(res);
+      }).catch((err) => {
+        reject(err);
+      })
     }).catch((err) => {
       reject(err);
     })
@@ -114,11 +118,17 @@ userUtil.forgotPasswordUSerEmail = (email) => {
 
 userUtil.forgotPasswordUSerMobile = (mobile) => {
   return new Promise((resolve, reject) => {
-    awsUtils.publishSnsSMS( mobile ,"hi i am gaddu... from AWS demo..." ).then((res) => {
-      resolve(res);
-    }).catch((err) => {
+    userSchema.findOne({userMobile : mobile}).then((data) => {
+      let msg = `Your password is ${data.userPassword}`;
+      awsUtils.publishSnsSMS( mobile , msg ).then((res) => {
+        resolve(res);
+      }).catch((err) => {
+        reject(err);
+      })
+     }).catch((err) => {
       reject(err);
     })
+
   })
 }
 

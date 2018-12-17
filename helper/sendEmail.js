@@ -17,14 +17,14 @@ const host = process.env.SMTPhost;
 const port = process.env.SMTPport;
 const transporter = nodemailer.createTransport(`smtp://${SMTPuser}:${SMTPpass}@${host}:${port}`);
 
-sendEmail.sendEmailToUser = (data) => {           
+sendEmail.sendEmailToUser = (data, password) => {           
   return new Promise ((resolve, reject) => {
     let mailOptions = {
       from: 'YOUR_VARIFIED_EMAIL', 
       to: data,
       subject: 'Email notification', 
-      text: 'Hi this is text.',
-      html: '<h2>hi this is from html.</h2>'
+      text:` Hi this is your password ${password} form demo application.`,
+      html: `<h2>Hi this is your password ${password} form demo application.</h2>`
     }
     transporter.sendMail(mailOptions).then((response) => {
       resolve(response);

@@ -7,7 +7,8 @@ var userStructure = mon.Schema({
   userpicture: String,
   userName: String,
   userGender: String,
-  seasons: String
+  seasons: String, 
+  userMobile: String
 });
 
 var userSchema = mon.model('users', userStructure);
