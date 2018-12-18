@@ -1,9 +1,13 @@
 require('dotenv').config();
 var http = require('http');
+const l10n = require('jm-ez-l10n');
 var cors = require('cors');
-var exp = require('express');
+var exp = require('express'); 
+
 var bodyParser = require("body-parser");
 var app = exp();
+l10n.setTranslationsFile('en', './constant-message/messages.en.json');
+app.use(l10n.enableL10NExpress);
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));

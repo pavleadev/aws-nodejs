@@ -1,0 +1,13 @@
+{
+  "ERR_OPERATION" : "Sorry, error in operation.",
+  "LOGIN_SUCCESS" : "You're login successfully.",
+  "REGISTARTION_SUCESS" : "Your registration is done successfully",
+  "EDIT_SUCCESS": "Your details has been edited.",
+  "FORGOT_PSWD_SUCCESS_EMAIL" : "Your password has been sent to you. Please check your email.",
+  "FORGOT_PSWD_SUCCESS_SMS" : "Your password has been sent to you. Please check your messages.",
+
+  "ERR_REGISTRATION" : "Sorry, error in registration. Please do it again.",
+  "ERR_LOGIN" : "Sorry, no user found. Please go for signUp.",
+  "ERR_PASSWORD_VARIFICATION": "Sorry, password doesn't match.",
+  "ERR_IMAGE_UPLOAD": "Sorry, some error in upload image."
+}

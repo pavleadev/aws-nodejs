@@ -1,5 +1,6 @@
 var userUtil = require('./userUtils');
 var passwordHash = require('password-hash');
+const l10n = require('jm-ez-l10n');
 var userController = {};
 const _ = require('lodash');
 var userData;
@@ -17,9 +18,9 @@ userController.addDetail = (req, res) => {
   userpicture ? userData.userpicture = userpicture : null;
 
   userUtil.createUser(userData).then((data) => {
-    res.status(200).json({ body: "Your registration is done successfully.", data: data });
+    res.status(200).json({ body: l10n.t("REGISTARTION_SUCESS"), data: data });
   }).catch(() => {
-    res.status(400).json({ error: "sorry, error in operation." })
+    res.status(400).json({ error: l10n.t("ERR_REGISTRATION") })
   })
 
 }
@@ -30,7 +31,7 @@ userController.getDetail = (req, res) => {
   userUtil.getUser(userId).then((data) => {
     res.status(200).json({ body: data });
   }).catch(() => {
-    res.status(400).json({ error: "sorry, error in operation." })
+    res.status(400).json({ error: l10n.t('ERR_OPERATION') });
   })
 }
 
@@ -43,9 +44,9 @@ userController.varifyUser = (req, res) => {
   }
 
   userUtil.varifyUser(userData).then((data) => {
-    (passwordHash.verify(userData.userPassword, data.userPassword)) ? res.status(200).json({ body: "You're login successfully.", data: data }) : res.status(400).json({ error: "Sorry, you entered wrong password." })
+    (passwordHash.verify(userData.userPassword, data.userPassword)) ? res.status(200).json({ body: l10n.t("LOGIN_SUCCESS"), data: data }) : res.status(400).json({ error: l10n.t("ERR_PASSWORD_VARIFICATION") })
   }).catch((err) => {
-    res.status(400).json({ error: "Sorry, error in operation." })
+    res.status(400).json({ error: err})
   })
 }
 
@@ -58,9 +59,9 @@ userController.editUserDetail = (req, res) => {
   }
   userpicture ? userData.userpicture = userpicture : null;
   userUtil.editUser(req.body.id, userData).then((resp) => {
-    res.status(200).json({ body: "Your details has been edited.", data: resp });
+    res.status(200).json({ body: l10n.t("EDIT_SUCCESS"), data: resp });
   }).catch(() => {
-    res.status(400).json({ error: "sorry, error in operation." })
+    res.status(400).json({ error: l10n.t('ERR_OPERATION') })
   })
 }
 
@@ -72,7 +73,7 @@ userController.checkUserExist = (req, res) => {
       res.status(200).json({ isexist: false });
     }
   }).catch((err) => {
-    res.status(400).json({ error: "Sorry, error in operation." })
+    res.status(400).json({ error: l10n.t('ERR_OPERATION') })
   })
 }
 
@@ -80,16 +81,16 @@ userController.forgotPasswordHandler = (req, res) => {
   const { userEmail, userMobile } = req.body;
   if (userEmail) {
     userUtil.forgotPasswordUSerEmail(userEmail).then((data) => {
-      res.status(200).json({ body: "your password has been sent to you. Please check your email.", data: data });
+      res.status(200).json({ body: l10n.t("FORGOT_PSWD_SUCCESS_EMAIL"), data: data });
     }).catch((err) => {
-      res.status(400).json({ error: err.message })
+      res.status(400).json({ error: l10n.t('ERR_OPERATION') })
     });
   }
   else if (userMobile) {
     userUtil.forgotPasswordUSerMobile(userMobile).then((data) => {
-      res.status(200).json({ body: "your password has been sent to you. Please check your messages.", data: data })
+      res.status(200).json({ body: l10n.t("FORGOT_PSWD_SUCCESS_SMS"), data: data })
     }).catch((err) => {
-      res.status(400).json({ error: err.message })
+      res.status(400).json({ error: l10n.t('ERR_OPERATION') })
     });
   }
 }

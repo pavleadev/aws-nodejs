@@ -1,6 +1,7 @@
 var userSchema = require('./userSchema');
 var awsUtils = require('../../helper/aws');
 var sendEmail = require('../../helper/sendEmail');
+const l10n = require('jm-ez-l10n');
 var userUtil = {};
 
 userUtil.createUser = (userData) => {
@@ -10,7 +11,7 @@ userUtil.createUser = (userData) => {
         userData.userpicture = res;
         userSchema.create(userData).then((res) => resolve(res)).catch((err) => reject(err));
       }).catch(() => {
-        reject("error in upload image");
+        reject("Sorry, some error in upload image");
       })
     } else {
       userSchema.create(userData).then((res) => resolve(res)).catch((err) => reject(err));
@@ -57,7 +58,7 @@ userUtil.getUserfromDB = (userId) => {
 userUtil.varifyUser = (data) => {
   return new Promise((resolve, reject) => {
     userSchema.findOne({ userEmail: data.userEmail }).then((res) => {
-      (res) ? resolve(res) : reject("No data matched");
+      (res) ? resolve(res) : reject(l10n.t("ERR_LOGIN"));
     }).catch((err) => {
       reject(err);
     })
