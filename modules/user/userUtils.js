@@ -1,6 +1,7 @@
 var userSchema = require('./userSchema');
 var awsUtils = require('../../helper/aws');
 var sendEmail = require('../../helper/sendEmail');
+var passwordHash = require('password-hash');
 const l10n = require('jm-ez-l10n');
 var userUtil = {};
 
@@ -72,12 +73,12 @@ userUtil.editUser = (id, data) => {
         const body = Buffer.from((data.userpicture).replace(/^data:image\/\w+;base64,/, ''), 'base64');
         const ext = (data.userpicture).split(';')[0].split('/')[1] || 'jpg';
         // const key = `${uuid.v1()}.${ext}`;
-       let key;
-        if(user.userpicture) {
-           key = user.userpicture
-        } else{
-           key = user.userEmail + Date.now();
-        } 
+        let key;
+        if (user.userpicture) {
+          key = user.userpicture
+        } else {
+          key = user.userEmail + Date.now();
+        }
         awsUtils.s3Putimage({ body, mime: `image/${ext}` }, key, 'base64').then((result) => {
           resolve(result);
           (user.userpicture) ? delete data.userpicture : data.userpicture = result;
@@ -95,8 +96,8 @@ userUtil.editUser = (id, data) => {
 
 userUtil.checkUserExist = (email) => {
   return new Promise((resolve, reject) => {
-    userSchema.findOne({ userEmail : email }).then((data) => {
-      (data != null) ? resolve(data) : resolve({});     
+    userSchema.findOne({ userEmail: email }).then((data) => {
+      (data != null) ? resolve(data) : resolve({});
     }).catch((err) => {
       reject(err);
     })
@@ -104,10 +105,16 @@ userUtil.checkUserExist = (email) => {
 }
 
 userUtil.forgotPasswordUSerEmail = (email) => {
-  return new Promise((resolve,reject) => {
-    userSchema.findOne({userEmail : email}).then((data) => {
-      sendEmail.sendEmailToUser(email, data.userPassword).then((res) =>{
-        resolve(res);
+  return new Promise((resolve, reject) => {
+    userSchema.findOne({ userEmail: email }).then(() => {
+      let newPassword = 'Abcd1234';
+      sendEmail.sendEmailToUser(email, newPassword).then((res) => {
+        let userPassword = passwordHash.generate(res.newPassword);
+        userSchema.findOneAndUpdate({ userEmail: email }, { userPassword: userPassword }).then((data) => {
+          resolve(res);
+        }).catch((err) => {
+          reject(err);
+        })
       }).catch((err) => {
         reject(err);
       })
@@ -119,17 +126,16 @@ userUtil.forgotPasswordUSerEmail = (email) => {
 
 userUtil.forgotPasswordUSerMobile = (mobile) => {
   return new Promise((resolve, reject) => {
-    userSchema.findOne({userMobile : mobile}).then((data) => {
+    userSchema.findOne({ userMobile: mobile }).then((data) => {
       let msg = `Your password is ${data.userPassword}`;
-      awsUtils.publishSnsSMS( mobile , msg ).then((res) => {
+      awsUtils.publishSnsSMS(mobile, msg).then((res) => {
         resolve(res);
       }).catch((err) => {
         reject(err);
       })
-     }).catch((err) => {
+    }).catch((err) => {
       reject(err);
     })
-
   })
 }
 

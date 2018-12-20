@@ -6,7 +6,7 @@ var exp = require('express');
 
 var bodyParser = require("body-parser");
 var app = exp();
-l10n.setTranslationsFile('en', './constant-message/messages.en.json');
+l10n.setTranslationsFile('en', './constantMessage/messages.en.json');
 app.use(l10n.enableL10NExpress);
 
 app.use(bodyParser.json({ limit: '50mb' }));

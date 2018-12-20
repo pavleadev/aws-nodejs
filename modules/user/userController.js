@@ -8,14 +8,17 @@ var userData;
 userController.addDetail = (req, res) => {
   const { userEmail, userPassword, userpicture, userName, userGender, seasons, userMobile } = req.body;
   userData = {
-    userEmail: userEmail,
+    userEmail,
     userPassword: passwordHash.generate(userPassword),
-    userName: userName,
-    userGender: userGender,
-    seasons: seasons,
-    userMobile: userMobile
+    userName,
+    userGender,
+    seasons,
+    userMobile
   };
-  userpicture ? userData.userpicture = userpicture : null;
+
+  if (userpicture) {
+    userData.userpicture = userpicture;
+  }
 
   userUtil.createUser(userData).then((data) => {
     res.status(200).json({ body: l10n.t("REGISTARTION_SUCESS"), data: data });
@@ -39,29 +42,33 @@ userController.varifyUser = (req, res) => {
 
   const { userEmail, userPassword } = req.body;
   const userData = {
-    userEmail: userEmail,
-    userPassword: userPassword
+    userEmail,
+    userPassword
   }
 
   userUtil.varifyUser(userData).then((data) => {
-    (passwordHash.verify(userData.userPassword, data.userPassword)) ? res.status(200).json({ body: l10n.t("LOGIN_SUCCESS"), data: data }) : res.status(400).json({ error: l10n.t("ERR_PASSWORD_VARIFICATION") })
+    if (passwordHash.verify(userData.userPassword, data.userPassword)) {
+      res.status(200).json({ body: l10n.t("LOGIN_SUCCESS"), data: data });
+    } else {
+      res.status(400).json({ error: l10n.t("ERR_PASSWORD_VARIFICATION") })
+    }
   }).catch((err) => {
-    res.status(400).json({ error: err})
+    res.status(400).json({ error: err })
   })
 }
 
 userController.editUserDetail = (req, res) => {
   const { seasons, userGender, userName, userpicture } = req.body;
   let userData = {
-    seasons: seasons,
-    userGender: userGender,
-    userName: userName,
+    seasons,
+    userGender,
+    userName,
   }
   userpicture ? userData.userpicture = userpicture : null;
   userUtil.editUser(req.body.id, userData).then((resp) => {
     res.status(200).json({ body: l10n.t("EDIT_SUCCESS"), data: resp });
   }).catch(() => {
-    res.status(400).json({ error: l10n.t('ERR_OPERATION') })
+    res.status(500).json({ error: l10n.t('ERR_OPERATION') })
   })
 }
 
@@ -72,8 +79,8 @@ userController.checkUserExist = (req, res) => {
     } else {
       res.status(200).json({ isexist: false });
     }
-  }).catch((err) => {
-    res.status(400).json({ error: l10n.t('ERR_OPERATION') })
+  }).catch(() => {
+    res.status(500).json({ error: l10n.t('ERR_OPERATION') })
   })
 }
 
@@ -82,15 +89,15 @@ userController.forgotPasswordHandler = (req, res) => {
   if (userEmail) {
     userUtil.forgotPasswordUSerEmail(userEmail).then((data) => {
       res.status(200).json({ body: l10n.t("FORGOT_PSWD_SUCCESS_EMAIL"), data: data });
-    }).catch((err) => {
-      res.status(400).json({ error: l10n.t('ERR_OPERATION') })
+    }).catch(() => {
+      res.status(500).json({ error: l10n.t('ERR_OPERATION') })
     });
   }
   else if (userMobile) {
     userUtil.forgotPasswordUSerMobile(userMobile).then((data) => {
       res.status(200).json({ body: l10n.t("FORGOT_PSWD_SUCCESS_SMS"), data: data })
-    }).catch((err) => {
-      res.status(400).json({ error: l10n.t('ERR_OPERATION') })
+    }).catch(() => {
+      res.status(500).json({ error: l10n.t('ERR_OPERATION') })
     });
   }
 }
