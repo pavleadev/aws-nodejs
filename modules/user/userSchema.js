@@ -1,7 +1,7 @@
 var mon=require("mongoose");
 mon.connect(process.env.DB_URL, { useNewUrlParser: true });
 
-var userStructure = mon.Schema({
+var userStructure = new mon.Schema({
   userEmail: String,
   userPassword: String,
   userpicture: String,

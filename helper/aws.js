@@ -1,4 +1,6 @@
 const aws = require('aws-sdk');
+const fs = require('fs');
+var async = require("async");
 
 var awsUtils = {};
 aws.config = {
@@ -69,5 +71,40 @@ awsUtils.publishSnsSMS = (to, message) => {
     })
   })
 };
+
+awsUtils.s3Putfile = (file, key, encoding) => {
+  return new Promise((resolve, reject) => {
+    let fileData = [];
+    let fileName = file.name;
+    let oldFilename = file.path;
+    let data = fs.readFileSync(oldFilename);
+
+  fileData.push({
+    "data": data,
+    "type": file.type,
+    "name": fileName,
+    "path": file.path
+  });
+  if (fileData.length > 0) {
+    async.eachSeries(fileData, (files, callback) => {
+      let params = {
+        Bucket: process.env.AwsS3Bucket,
+        ACL: 'public-read',
+        Body: files.data,
+        Key: key,
+        //ContentType: files.type
+      };
+      s3.putObject(params, (err, data) => {
+        (err) ? reject(err) : resolve(key);
+      });
+    })
+  }
+    // const params = {
+    //   Body: file.file.path,
+    //   Bucket: process.env.AwsS3Bucket,
+    //   Key: key,
+    // };
+  });
+}
 
 module.exports = awsUtils;

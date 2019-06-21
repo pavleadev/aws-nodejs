@@ -1,4 +1,5 @@
 var userSchema = require('./userSchema');
+var dummyUserSchema = require('./userDummySchema');
 var awsUtils = require('../../helper/aws');
 var sendEmail = require('../../helper/sendEmail');
 var passwordHash = require('password-hash');
@@ -137,6 +138,41 @@ userUtil.forgotPasswordUSerMobile = (mobile) => {
       reject(err);
     })
   })
+}
+
+userUtil.dummyUserStructure = (page) => {
+  return new Promise((resolve,reject) => {
+    let total_pages = 10;
+    let per_page = 15;
+    // "page":1,"per_page":3,"total":12,"total_pages":4,
+    dummyUserSchema.find().limit(per_page).skip(total_pages - page).then((data) => {
+      resolve({
+        paginate: {
+          total_pages: total_pages,
+          per_page: per_page,
+          page: page,
+          total: 150
+        },
+        data: data
+      });
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+userUtil.uploadImageTest = (image) => {
+  return new Promise((resolve, reject) => {
+    // const body = Buffer.from((imageData.path), 'base64');
+    // const ext = image.name.split(';')[0].split('/')[1] || 'jpg';
+    //awsUtils.putObject(image, key, 'base64').then((result) => { resolve(result); }).catch((err) => { reject(err); });
+
+    awsUtils.s3Putfile(image.file , 'Test_ticket', "base64" ).then((result) => { resolve(result); }).catch((err) => { reject(err); });
+  })
+}
+
+userUtil.testSocketIO = (io, data) => {
+  io.emit('SocketFromNode', data);
 }
 
 module.exports = userUtil;

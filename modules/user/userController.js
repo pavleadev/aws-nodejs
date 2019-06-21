@@ -1,6 +1,7 @@
 var userUtil = require('./userUtils');
 var passwordHash = require('password-hash');
 const l10n = require('jm-ez-l10n');
+var jwtUtil = require('../../helper/jwt')
 var userController = {};
 const _ = require('lodash');
 var userData;
@@ -48,7 +49,8 @@ userController.varifyUser = (req, res) => {
 
   userUtil.varifyUser(userData).then((data) => {
     if (passwordHash.verify(userData.userPassword, data.userPassword)) {
-      res.status(200).json({ body: l10n.t("LOGIN_SUCCESS"), data: data });
+      const token = jwtUtil.getAuthToken({ id: data.id }); 
+      res.status(200).json({ body: l10n.t("LOGIN_SUCCESS"), data: data, token: token });
     } else {
       res.status(400).json({ error: l10n.t("ERR_PASSWORD_VARIFICATION") })
     }
@@ -100,6 +102,27 @@ userController.forgotPasswordHandler = (req, res) => {
       res.status(500).json({ error: l10n.t('ERR_OPERATION') })
     });
   }
+}
+
+userController.dummyUserData = (req, res) => {
+
+  userUtil.dummyUserStructure(parseInt(req.query.page)).then(data => {
+    res.status(200).json({ data: data });
+  }).catch(() => {
+    res.status(500).json({ error: l10n.t('ERR_OPERATION') });
+  })
+}
+
+userController.testImageController = (req,res) => {
+  // userUtil.uploadImageTest(req.files).then(data => {
+    const io = req.app.get('socketio');
+    let data = "This is me.. Socket.. Hello..."
+    userUtil.testSocketIO(io, data);
+    res.status(200).json({ data: data });
+  // }).catch((error) => {
+  //   console.log(error);
+  //   res.status(500).json({ error: l10n.t('ERR_OPERATION') });
+  // })
 }
 
 module.exports = userController;

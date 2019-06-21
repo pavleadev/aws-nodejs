@@ -25,6 +25,12 @@ app.use((req,res, next) => {
 app.use('/api', require('./routes/config'));
 
 var server = http.createServer(app);
+const io = require('socket.io')(server);
+
+const socketFile = require('./helper/socket');
+
+socketFile.socketData.createSocketServer(io);
+app.set('socketio', io);
 
 server.listen(process.env.SERVER_PORT, () => {
   console.log("server started");

@@ -13,17 +13,22 @@
   "author": "Gargi Kantesaria",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.2",
     "aws-sdk": "^2.368.0",
+    "connect-multiparty": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^6.1.0",
     "ejs": "^2.6.1",
     "email-templates-v2": "^2.0.3",
     "express": "^4.16.4",
+    "fs": "0.0.1-security",
     "jm-ez-l10n": "^1.0.0",
+    "jwt-simple": "^0.5.6",
     "mongoose": "^5.3.14",
     "nodemailer": "^4.7.0",
     "nodemon": "^1.18.4",
     "password-hash": "^1.2.2",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "socket.io": "^2.2.0"
   }
 }
